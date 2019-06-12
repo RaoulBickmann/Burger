@@ -1,0 +1,387 @@
+#VRML_SIM R2019a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation 0.3583338889343128 0.8560680512497655 0.3724839804214945 4.5509101144237105
+  position -0.24637893556012858 0.2638057745203438 0.016638526905680948
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 1 1
+}
+WoodenBox {
+  translation 0.2035858537806572 0.05 -0.22203210044616045
+  rotation 0 1 0 4.1953351758958295
+  size 0.1 0.1 0.1
+}
+WoodenBox {
+  translation -0.21231427560167584 0.05 -0.1305477276324995
+  rotation 0 -0.9999999999999999 0 0.6479534848028948
+  name "wooden box(2)"
+  size 0.1 0.1 0.1
+}
+WoodenBox {
+  translation -0.2987363765518387 0.05 0.32360290906888256
+  rotation 0 1 0 0.37960911230876626
+  name "wooden box(1)"
+  size 0.1 0.1 0.1
+  mass 0.19999999999999998
+}
+DEF WALL_SOLID Solid {
+  translation -0.5000000000000001 0.05 0
+  children [
+    DEF WALL Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 0.4980392156862745
+        roughness 0.5
+        metalness 0
+      }
+      geometry Box {
+        size 0.01 0.1 1
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE WALL
+}
+Solid {
+  translation -7.192345078790347e-09 0.049999999999999975 0.5000000000000001
+  rotation 0 0.9999999999999999 0 4.712388966
+  children [
+    USE WALL
+  ]
+  name "solid(2)"
+  boundingObject USE WALL
+}
+Solid {
+  translation 7.192345113484815e-09 0.049999999999999975 -0.5000000000000002
+  rotation 0 0.9999999999999999 0 4.712388966
+  children [
+    USE WALL
+  ]
+  name "solid(3)"
+  boundingObject USE WALL
+}
+Solid {
+  translation 0.5000000000000001 0.05 0
+  children [
+    USE WALL
+  ]
+  name "solid(4)"
+  boundingObject USE WALL
+}
+Robot {
+  translation -0.01691397421836187 0.08 -0.3521694422554972
+  children [
+    DistanceSensor {
+      translation 0.03 0 0.1
+      rotation 0 1 0 3.5342923378995748
+      children [
+        Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry DEF SENSOR_SHAPE Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "ds_left"
+      boundingObject DEF SENSOR_SHAPE Box {
+        size 0.01 0.01 0.01
+      }
+      lookupTable [
+        0 100 0.1
+        0.3 0 0.1
+      ]
+      type "infra-red"
+    }
+    DistanceSensor {
+      translation -0.03 0 0.1
+      rotation 0 -1 0 0.3927
+      children [
+        Shape {
+          appearance PBRAppearance {
+            metalness 0
+          }
+          geometry USE SENSOR_SHAPE
+        }
+      ]
+      name "ds_right"
+      boundingObject USE SENSOR_SHAPE
+      lookupTable [
+        0 100 0.1
+        0.3 0 0.1
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel1"
+        }
+      ]
+      endPoint DEF WHEEL1 Solid {
+        translation 0.060000000006314225 0 0.04999999986523044
+        rotation 1 0 0 0
+        children [
+          DEF WHEEL Transform {
+            rotation 0 0 1 1.5708003061004252
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0 1 0
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.04
+                }
+              }
+            ]
+          }
+        ]
+        name "solid123"
+        boundingObject USE WHEEL
+        physics DEF WHEEL_PH Physics {
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.06 0 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel2"
+        }
+      ]
+      endPoint Solid {
+        translation 0.06 0 -0.04999999999999188
+        rotation 1 0 0 0
+        children [
+          USE WHEEL
+        ]
+        boundingObject USE WHEEL
+        physics USE WHEEL_PH
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor -0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel3"
+        }
+      ]
+      endPoint Solid {
+        translation -0.06 0 0.05
+        rotation 1 0 0 0
+        children [
+          USE WHEEL
+        ]
+        name "solid(1)"
+        boundingObject USE WHEEL
+        physics USE WHEEL_PH
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor -0.06 0 -0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel4"
+        }
+      ]
+      endPoint Solid {
+        translation -0.06 0 -0.05
+        rotation 1 0 0 0
+        children [
+          USE WHEEL
+        ]
+        name "solid(1)"
+        boundingObject USE WHEEL
+        physics USE WHEEL_PH
+      }
+    }
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        roughness 1
+        metalness 0
+      }
+      geometry DEF BODY Box {
+        size 0.1 0.05 0.2
+      }
+    }
+  ]
+  boundingObject USE BODY
+  physics Physics {
+  }
+  controller ""
+}
+DEF Burger Robot {
+  translation 0 0.060000000000000005 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        metalness 0
+      }
+      geometry DEF BURGER_BODY Box {
+        size 0.108 0.04 0.108
+      }
+    }
+    Transform {
+      translation 0 -0.016999999999999998 -0.04000000000000001
+      children [
+        Solid {
+          children [
+            DEF FRONT Shape {
+              appearance PBRAppearance {
+                metalness 0
+              }
+              geometry Capsule {
+                height 0.020000000000000004
+                radius 0.009999999999999998
+              }
+            }
+          ]
+          name "solid(1)"
+          boundingObject USE FRONT
+          physics Physics {
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.065 -0.02 0
+      }
+      device [
+        PositionSensor {
+          name "left_odo"
+        }
+        RotationalMotor {
+          name "left_motor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.06499999868711959 -6.973441639239464e-06 -9.616058084249701e-07
+        rotation 1 0 0 0
+        children [
+          DEF BURGER_WHEEL Transform {
+            translation 0 -0.020000000000000004 0
+            rotation 0 0 -1 4.712388985179587
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.01
+                  radius 0.020000000000000004
+                }
+              }
+            ]
+          }
+        ]
+        boundingObject USE BURGER_WHEEL
+        physics DEF BURGER_WHEEL_PH Physics {
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor -0.065 -0.020000000000000004 0
+      }
+      device [
+        PositionSensor {
+          name "right_odo"
+        }
+        RotationalMotor {
+          name "right_motor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.06499999731059047 -8.264522449258349e-06 -1.0618032867791712e-06
+        rotation -0.9999999770588422 2.5948425164094502e-05 -0.00021262406812283646 2.475566823160076e-07
+        children [
+          USE BURGER_WHEEL
+        ]
+        boundingObject USE BURGER_WHEEL
+        physics USE BURGER_WHEEL_PH
+      }
+    }
+    DEF Sensors Transform {
+      translation 0 0.009999999999999998 0
+      children [
+        DistanceSensor {
+          translation -0.052 0 0.055
+          rotation 0 1 0 -2.3561996938995744
+          children [
+            DEF BURGER_SENSOR_S Shape {
+              appearance PBRAppearance {
+                baseColor 0 0 1
+                metalness 0
+              }
+              geometry Box {
+                size 0.003 0.013 0.013000000000000001
+              }
+            }
+          ]
+          name "FRR"
+          boundingObject USE BURGER_SENSOR_S
+          type "infra-red"
+        }
+        DistanceSensor {
+          translation -0.023 0 0.055
+          rotation 0 0.9999999999999999 0 4.712388966
+          children [
+            USE BURGER_SENSOR_S
+          ]
+          name "FR"
+          boundingObject USE BURGER_SENSOR_S
+          type "infra-red"
+        }
+        DistanceSensor {
+          translation 0.023 0 0.055
+          rotation 0 0.9999999999999999 0 4.712388966
+          children [
+            USE BURGER_SENSOR_S
+          ]
+          name "FL"
+          boundingObject USE BURGER_SENSOR_S
+          type "infra-red"
+        }
+        DistanceSensor {
+          translation 0.052 0 0.055
+          rotation 0 1 0 5.4977926440000005
+          children [
+            USE BURGER_SENSOR_S
+          ]
+          name "FLL"
+          boundingObject USE BURGER_SENSOR_S
+          type "infra-red"
+        }
+      ]
+    }
+  ]
+  name "robot(1)"
+  boundingObject DEF BURGER_BODY Box {
+    size 0.108 0.04 0.108
+  }
+  physics Physics {
+    centerOfMass [
+      0 0 -0.009999999999999998
+    ]
+  }
+  controller "Burger_Controller"
+}
