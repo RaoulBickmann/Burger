@@ -5,6 +5,7 @@
 from controller import Robot, DistanceSensor, Motor, PositionSensor
 import numpy as np
 from lib import drive as d
+from lib import EKF as ekf
 
 # create the Robot instance.
 robot = Robot()
