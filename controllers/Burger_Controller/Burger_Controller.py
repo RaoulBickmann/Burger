@@ -50,9 +50,16 @@ while robot.step(timestep) != -1:
         # sensorFR.getValue(), 
         # sensorFRR.getValue())
         
-    print(leftOdo.getValue(), rightOdo.getValue())
-    leftWheel.setPosition(2 * 3.14)
-    rightWheel.setPosition(2* 3.14)
+    # print(leftOdo.getValue(), rightOdo.getValue())
+    # leftWheel.setPosition(2 * 3.14)
+    # rightWheel.setPosition(2* 3.14)
+    
+    leftWheel.setPosition(float('inf'))
+    rightWheel.setPosition(float('inf'))
+    
+            
+    leftWheel.setVelocity(1.5);
+    rightWheel.setVelocity(1.5);
     
     
     # Process sensor data here.

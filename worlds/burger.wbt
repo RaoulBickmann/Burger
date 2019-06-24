@@ -3,8 +3,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation 0.3583338889343128 0.8560680512497655 0.3724839804214945 4.5509101144237105
-  position -0.24637893556012858 0.2638057745203438 0.016638526905680948
+  orientation 0.2321357962296285 0.9423201727002491 0.2411341208352916 4.664152828836311
+  position -1.6026346874639015 0.8767179434393255 0.19190356365442063
 }
 TexturedBackground {
 }
@@ -226,10 +226,10 @@ Robot {
   boundingObject USE BODY
   physics Physics {
   }
-  controller ""
+  controller "4_wheels_collision_avoidance"
 }
 DEF Burger Robot {
-  translation 0 0.060000000000000005 0
+  translation 0.4000000000000002 0.060000000000000005 0
   children [
     Shape {
       appearance PBRAppearance {
