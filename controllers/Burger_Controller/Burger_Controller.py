@@ -6,6 +6,8 @@ from controller import Robot, DistanceSensor, Motor, PositionSensor
 import numpy as np
 from lib import drive as d
 from lib import EKF as ekf
+from controller import Keyboard
+
 
 # create the Robot instance.
 robot = Robot()
@@ -38,6 +40,7 @@ rightOdo = robot.getPositionSensor("right_odo")
 leftOdo.enable(timestep)
 rightOdo.enable(timestep)
 
+
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
 while robot.step(timestep) != -1:
@@ -61,7 +64,7 @@ while robot.step(timestep) != -1:
     leftWheel.setVelocity(1.5);
     rightWheel.setVelocity(1.5);
     
-    
+
     # Process sensor data here.
     # d.driveStraight(robot)
 
@@ -70,6 +73,7 @@ while robot.step(timestep) != -1:
     pass
 
 # Enter here exit cleanup code.
+
 
 
 
