@@ -7,6 +7,7 @@ import numpy as np
 from lib import drive as d
 from lib import EKF as ekf
 from controller import Keyboard
+import struct, math
 
 
 # create the Robot instance.
@@ -20,6 +21,8 @@ timestep = int(robot.getBasicTimeStep())
 #  led = robot.getLED('ledname')
 #  ds = robot.getDistanceSensor('dsname')
 #  ds.enable(timestep)
+
+emitter = robot.getEmitter("emitter")
 
 sensorFLL = robot.getDistanceSensor("FLL")
 sensorFL = robot.getDistanceSensor("FL")
@@ -37,9 +40,21 @@ rightWheel = robot.getMotor("right_motor")
 leftOdo = robot.getPositionSensor("left_odo")
 rightOdo = robot.getPositionSensor("right_odo")
 
+leftLastPos = 0;
+rightLastPos = 0;
+
 leftOdo.enable(timestep)
 rightOdo.enable(timestep)
 
+
+position = np.array([0 , 0, 0])
+
+freq = 0
+    
+
+def sendData(data):
+    message = str(data)
+    emitter.send(message.encode('utf-8'))   
 
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
@@ -54,16 +69,29 @@ while robot.step(timestep) != -1:
         # sensorFRR.getValue())
         
     # print(leftOdo.getValue(), rightOdo.getValue())
-    # leftWheel.setPosition(2 * 3.14)
-    # rightWheel.setPosition(2* 3.14)
     
     leftWheel.setPosition(float('inf'))
     rightWheel.setPosition(float('inf'))
     
-            
-    leftWheel.setVelocity(1.5);
-    rightWheel.setVelocity(1.5);
+
+    leftWheel.setVelocity(1);
+    rightWheel.setVelocity(1);
     
+    
+            
+    # leftWheel.setPosition(float(3.14))
+    # rightWheel.setPosition(float(3.14))
+            
+    
+    if freq == 62:
+        distCovered = leftOdo.getValue() - leftLastPos   #in Radians
+        leftLastPos = leftOdo.getValue()
+        distCm = distCovered * 0.02
+        print(distCm)
+        b =  np.array([0, distCm, 0])
+        position = np.add(position, b)
+        freq = 0
+    freq += 1
 
     # Process sensor data here.
     # d.driveStraight(robot)
