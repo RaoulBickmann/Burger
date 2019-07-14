@@ -50,6 +50,9 @@ rightOdo.enable(timestep)
 position = np.array([0 , 0, 0])
 
 freq = 0
+
+TIRE_RAD = 0.02
+AXLE_LEN = 0.065 * 2
     
 
 def sendData(data):
@@ -84,11 +87,19 @@ while robot.step(timestep) != -1:
             
     
     if freq == 62:
-        distCovered = leftOdo.getValue() - leftLastPos   #in Radians
+        leftDist = round((leftOdo.getValue() - leftLastPos) * TIRE_RAD, 4)
+        rightDist = round((rightOdo.getValue() - rightLastPos) * TIRE_RAD, 4)
         leftLastPos = leftOdo.getValue()
-        distCm = distCovered * 0.02
-        print(distCm)
-        b =  np.array([0, distCm, 0])
+        rightLastPos = rightOdo.getValue()
+        
+        diff = leftDist - rightDist
+        circumf = AXLE_LEN * math.pi
+        b = diff/circumf
+        print(b)
+        
+        
+        print(leftDist, rightDist)
+        b =  np.array([0, leftDist, 0])
         position = np.add(position, b)
         freq = 0
     freq += 1
