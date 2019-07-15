@@ -3,8 +3,8 @@ WorldInfo {
   basicTimeStep 16
 }
 Viewpoint {
-  orientation 0.23487378121296756 0.9427518391259295 0.23675573218699528 4.657116826495628
-  position -0.6790808235051023 0.40394783600234513 0.05898767188892155
+  orientation 0.1869889460592219 0.9653998205671297 0.1817644643504758 4.720669622832717
+  position -0.32998568245508214 0.16016526774301448 -0.03345290737795333
 }
 TexturedBackground {
 }
@@ -231,6 +231,7 @@ DEF Burger Robot {
   translation 0 0.05 0
   children [
     DEF ROBOT_POSITION Transform {
+      rotation 0 1 0 -9.307179586137693e-06
       children [
         Shape {
           appearance PBRAppearance {
@@ -281,8 +282,8 @@ DEF Burger Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06499999868711959 -6.973441639239464e-06 -9.616058084249701e-07
-        rotation 1 0 0 0
+        translation 0.06499999966761098 5.2357701383620725e-06 4.023936324297901e-07
+        rotation 1 0 0 2.9802322387695313e-08
         children [
           DEF BURGER_WHEEL Transform {
             translation 0 -0.02 0

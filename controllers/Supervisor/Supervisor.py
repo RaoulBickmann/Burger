@@ -35,15 +35,19 @@ lastDist = 0
 
 while robot.step(timestep) != -1:
 
-    
-    if freq == 62:
+    if freq == 2:
         translation = translationField.getPosition()
-        m = rotationField.getSFRotation()
+        orientation = translationField.getOrientation()
+        zOri = np.array([orientation[6], orientation[8]])
+        # angle = np.arccos(np.clip(np.dot(zOri, [0,1]), -1.0, 1.0))
+        angle = np.arctan2(zOri[0], zOri[1])
+       
+        print(angle)
         # rotation = np.arctan2(m[0], m[6])
-        print(translation[2] - lastDist)
+        # print(translation[2] - lastDist)
         lastDist = translation[2]
-        b =  np.array([round(translation[0], 2), round(translation[2], 2), round(m[1] * m[3], 2)])
-        position = np.vstack((position, b))
+        # b =  np.array([round(translation[0], 4), round(translation[2], 4), round(angle, 4)])
+        # position = np.vstack((position, b))
         freq = 0
     freq += 1
     

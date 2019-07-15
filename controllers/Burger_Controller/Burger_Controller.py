@@ -53,11 +53,30 @@ freq = 0
 
 TIRE_RAD = 0.02
 AXLE_LEN = 0.065 * 2
-    
+
+total = 0
+
+a = False
+keyboard = robot.getKeyboard()
+keyboard.enable(timestep)
+
 
 def sendData(data):
     message = str(data)
-    emitter.send(message.encode('utf-8'))   
+    emitter.send(message.encode('utf-8')) 
+    
+
+# def convertAngle(total, newAngle):
+    # if(total >= 0 && total + newAngle >= ):
+        
+    # elif(total < 0)
+    
+def normalize_angle(x):
+    x = x % (2 * np.pi)    # force in range [0, 2 pi)
+    if x > np.pi:          # move to [-pi, pi)
+        x -= 2 * np.pi
+    return x
+
 
 # Main loop:
 # - perform simulation steps until Webots is stopping the controller
@@ -76,31 +95,38 @@ while robot.step(timestep) != -1:
     leftWheel.setPosition(float('inf'))
     rightWheel.setPosition(float('inf'))
     
+    key=keyboard.getKey()
+    if (key== 65):   #a
+       a = True
+   
+    if(a):
+        rightWheel.setVelocity(1);
+    else:
+        rightWheel.setVelocity(0);
+        leftWheel.setVelocity(0);
 
-    leftWheel.setVelocity(1);
-    rightWheel.setVelocity(1);
-    
     
             
     # leftWheel.setPosition(float(3.14))
     # rightWheel.setPosition(float(3.14))
             
     
-    if freq == 62:
-        leftDist = round((leftOdo.getValue() - leftLastPos) * TIRE_RAD, 4)
-        rightDist = round((rightOdo.getValue() - rightLastPos) * TIRE_RAD, 4)
+    if freq == 2:
+        leftDist = (leftOdo.getValue() - leftLastPos) * TIRE_RAD
+        rightDist = (rightOdo.getValue() - rightLastPos) * TIRE_RAD
         leftLastPos = leftOdo.getValue()
         rightLastPos = rightOdo.getValue()
         
         diff = leftDist - rightDist
-        circumf = AXLE_LEN * math.pi
-        b = diff/circumf
-        print(b)
         
         
-        print(leftDist, rightDist)
-        b =  np.array([0, leftDist, 0])
+        angle = diff /(AXLE_LEN)
+        total = total + angle
+        # print(diff, total, total/0.4084* 100)
+        print(normalize_angle(total))
+        b =  np.array([rightDist, leftDist, angle])
         position = np.add(position, b)
+        # print(position[2])
         freq = 0
     freq += 1
 
