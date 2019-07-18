@@ -47,7 +47,8 @@ leftOdo.enable(timestep)
 rightOdo.enable(timestep)
 
 
-position = np.array([0 , 0, 0])
+position = np.zeros((3, 1))
+controlIn = np.zeros((2,1))
 
 freq = 0
 
@@ -56,20 +57,16 @@ AXLE_LEN = 0.065 * 2
 
 total = 0
 
-a = False
 keyboard = robot.getKeyboard()
 keyboard.enable(timestep)
+
+simStep = 10
 
 
 def sendData(data):
     message = str(data)
     emitter.send(message.encode('utf-8')) 
     
-
-# def convertAngle(total, newAngle):
-    # if(total >= 0 && total + newAngle >= ):
-        
-    # elif(total < 0)
     
 def normalize_angle(x):
     x = x % (2 * np.pi)    # force in range [0, 2 pi)
@@ -77,56 +74,80 @@ def normalize_angle(x):
         x -= 2 * np.pi
     return x
 
+mode = 0
 
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
+# 0 stop
+# 1 forward
+# 2 left
+# 3 right
+
+def steering(key):
+    u = np.zeros((2,1))
+    if (key == 87):   #w
+        rightWheel.setVelocity(1);
+        leftWheel.setVelocity(1);
+        u[0] = .1 * TIRE_RAD
+        u[1] = 0
+        return 1, u
+    elif (key == 83):   #s
+        rightWheel.setVelocity(0);
+        leftWheel.setVelocity(0);
+        u[0] = 0
+        u[1] = 0
+        return 0, u
+    elif (key == 65):   #a
+        rightWheel.setVelocity(1);
+        leftWheel.setVelocity(-1);
+        u[0] = 0
+        u[1] = -(2 * TIRE_RAD)/AXLE_LEN
+        return 2, u
+    elif (key == 68):   #d
+        rightWheel.setVelocity(-1);
+        leftWheel.setVelocity(1);
+        u[0] = 0
+        u[1] = (.2 * TIRE_RAD)/AXLE_LEN
+        return 3, u
+    else:
+        return mode, controlIn
+
+leftWheel.setPosition(float('inf'))
+rightWheel.setPosition(float('inf'))
+    
+rightWheel.setVelocity(0);
+leftWheel.setVelocity(0);
+    
 while robot.step(timestep) != -1:
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()
     
     # print(sensorFLL.getValue(), 
         # sensorFL.getValue(), 
         # sensorFR.getValue(), 
         # sensorFRR.getValue())
         
-    # print(leftOdo.getValue(), rightOdo.getValue())
+    key = keyboard.getKey()
+    if(key != -1):
+        mode, controlIn = steering(key)    
     
-    leftWheel.setPosition(float('inf'))
-    rightWheel.setPosition(float('inf'))
-    
-    key=keyboard.getKey()
-    if (key== 65):   #a
-       a = True
-   
-    if(a):
-        rightWheel.setVelocity(1);
-    else:
-        rightWheel.setVelocity(0);
-        leftWheel.setVelocity(0);
-
-    
-            
-    # leftWheel.setPosition(float(3.14))
-    # rightWheel.setPosition(float(3.14))
-            
-    
-    if freq == 2:
+    if freq == 5:
         leftDist = (leftOdo.getValue() - leftLastPos) * TIRE_RAD
         rightDist = (rightOdo.getValue() - rightLastPos) * TIRE_RAD
         leftLastPos = leftOdo.getValue()
         rightLastPos = rightOdo.getValue()
         
         diff = leftDist - rightDist
+        dist = min(leftDist, rightDist)
         
+        angle = round(diff /(AXLE_LEN), 8)
+                
+        if(abs(angle)> 0.000001):
+            position[2] = normalize_angle(position[2] + angle)
+        else:
+            position[0] -= math.sin(position[2]) * dist
+            position[1] += math.cos(position[2]) * dist;
+    
+        data = np.concatenate([position, controlIn])
+        data = ', '.join(str(x[0]) for x in data)
+        sendData(data)        
         
-        angle = diff /(AXLE_LEN)
-        total = total + angle
-        # print(diff, total, total/0.4084* 100)
-        print(normalize_angle(total))
-        b =  np.array([rightDist, leftDist, angle])
-        position = np.add(position, b)
-        # print(position[2])
         freq = 0
     freq += 1
 

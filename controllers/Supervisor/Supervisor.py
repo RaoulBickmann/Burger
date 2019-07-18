@@ -20,7 +20,8 @@ burger = robot.getFromDef('Burger')
 translationField = robot.getFromDef('ROBOT_POSITION')
 rotationField = burger.getField('rotation')
 
-position = np.array([[0, 0, 0]])
+groundtruth = np.zeros((3, 1)).transpose()
+position = np.zeros((5, 1)).transpose()
 
 freq = 0
 
@@ -31,36 +32,34 @@ receiver = robot.getReceiver("receiver")
 receiver.enable(timestep)
 
 lastDist = 0
-
+np.set_printoptions(suppress=True)
 
 while robot.step(timestep) != -1:
 
-    if freq == 2:
+    if freq == 5:
         translation = translationField.getPosition()
         orientation = translationField.getOrientation()
+        
         zOri = np.array([orientation[6], orientation[8]])
-        # angle = np.arccos(np.clip(np.dot(zOri, [0,1]), -1.0, 1.0))
         angle = np.arctan2(zOri[0], zOri[1])
        
-        print(angle)
-        # rotation = np.arctan2(m[0], m[6])
-        # print(translation[2] - lastDist)
-        lastDist = translation[2]
-        # b =  np.array([round(translation[0], 4), round(translation[2], 4), round(angle, 4)])
-        # position = np.vstack((position, b))
+        b =  np.array([translation[0], translation[2], angle])
+        groundtruth = np.vstack((groundtruth, b))
         freq = 0
     freq += 1
     
     key=keyboard.getKey()
-    if (key== 65):   #a
-        df = pd.DataFrame(position, columns=['x', 'y', 'a'])
-        df.to_csv("test.csv")
-   
-   
+    if (key== 67):   #c
+        dfTruth = pd.DataFrame(groundtruth, columns=['x', 'y', 'a'])
+        dfPos = pd.DataFrame(position, columns=['x', 'y', 'a', 'uv', 'ua'])
+        dfTruth.to_csv("truth.csv", index = False)
+        dfPos.to_csv("position.csv", index = False)
+        print("done")
    
     if receiver.getQueueLength() > 0:
         message = receiver.getData().decode('utf-8')
         receiver.nextPacket()
-        print('I should ' + message + '!')   
+        data = np.fromstring(message, sep=",")
+        position = np.vstack((position, data))
 pass
 
