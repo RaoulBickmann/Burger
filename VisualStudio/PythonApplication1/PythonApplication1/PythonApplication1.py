@@ -75,7 +75,7 @@ def run_sim(position, controlIn, truth):
 
     ukf.x = np.array([0, 0, .0])
     ukf.P = np.diag([.1, .1, .05])
-    ukf.R = np.diag([0.1**2, 0.1**2, np.radians(1)])
+    ukf.R = np.diag([3**2, 3**2, np.radians(1)])
     ukf.Q = np.eye(3)*0.0001
 
 
@@ -90,8 +90,8 @@ def run_sim(position, controlIn, truth):
             plt.plot(ukf.x[0], ukf.x[1], 'ro', alpha=0.3)
             plt.plot(position[x][0], position[x][1], 'go', alpha=0.3)
             plt.plot(truth[x][0], truth[x][1], 'ko', alpha=0.3)
+            plot_covariance((ukf.x[0], ukf.x[1]), ukf.P[0:2, 0:2], std=.1, facecolor='g', alpha=0.3)
 
-        #plot_covariance((ukf.x[0], ukf.x[1]), ukf.P[0:2, 0:2], std=.1, facecolor='g', alpha=0.3)
 
     #axes = plt.gca()
     #axes.set_xlim([-.5,.5])

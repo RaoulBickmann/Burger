@@ -276,6 +276,7 @@ DEF Burger Robot {
       device [
         PositionSensor {
           name "left_odo"
+          noise 3e-06
         }
         DEF left_motor RotationalMotor {
           name "left_motor"
@@ -314,6 +315,7 @@ DEF Burger Robot {
       device [
         PositionSensor {
           name "right_odo"
+          noise 3e-06
         }
         DEF right_motor RotationalMotor {
           name "right_motor"
