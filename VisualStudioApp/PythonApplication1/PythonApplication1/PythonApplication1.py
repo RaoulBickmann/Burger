@@ -39,6 +39,7 @@ def residual_x(a, b):
 
 #prediction aus control input und vorigem zustand
 def state_trans(x, dt, u):
+    x = +x
 
     x[0] -= sin(x[2]) * u[0] * dt
     x[1] += cos(x[2]) * u[0] * dt
@@ -47,7 +48,7 @@ def state_trans(x, dt, u):
 
     return x;
 
-def measurement_trans(x, measurement):
+def measurement_trans(x, u):
     #dist = min(z[0], z[1])
     #angle = (z[0] - z[1]) /(AXLE_LEN)
 
@@ -56,6 +57,8 @@ def measurement_trans(x, measurement):
 
     #x[2] = normalize_angle(x[2] + angle)
     
+    x = +x
+
     y = np.zeros(3)
     
     y[0] = measurement[0]
@@ -114,6 +117,7 @@ def run_sim(measurements, controlIn, truth):
         
         u = controlIn[x]
         z = measurements[x]
+        #R hoch stzen bei distance 0
         ukf.predict(u=u)
         ukf.update(z, measurement=z)
 
@@ -121,7 +125,7 @@ def run_sim(measurements, controlIn, truth):
 
         if x % 10 == 0:
             plt.plot(ukf.x[0], ukf.x[1], 'ro', alpha=0.3)
-            #plt.plot(ukf.x[3], ukf.x[4], 'bo', alpha=0.3)
+            plt.plot(ukf.x[3], ukf.x[4], 'bo', alpha=0.3)
             #plt.plot(position[x][0], position[x][1], 'go', alpha=0.3)
             plt.plot(truth[x][0], truth[x][1], 'ko', alpha=0.3)
             plot_covariance((ukf.x[0], ukf.x[1]), ukf.P[0:2, 0:2], std=.1, facecolor='g', alpha=0.3)
