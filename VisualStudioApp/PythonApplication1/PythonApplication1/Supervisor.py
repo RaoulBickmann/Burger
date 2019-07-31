@@ -21,7 +21,7 @@ translationField = robot.getFromDef('ROBOT_POSITION')
 rotationField = burger.getField('rotation')
 
 groundtruth = np.zeros((3, 1)).transpose()
-burgerData = np.zeros((5, 1)).transpose()
+burgerData = np.zeros((6, 1)).transpose()
 
 freq = 0
 
@@ -52,7 +52,7 @@ while robot.step(timestep) != -1:
     if (key== 67):   #c
         dfTruth = pd.DataFrame(groundtruth, columns=['x', 'y', 'a'])
         dfData = pd.DataFrame(burgerData, 
-            columns=['zl', 'zr', 'zFL', 'uv', 'ua'])
+            columns=['zl', 'zr', 'zFL', 'zFR', 'uv', 'ua'])
         dfTruth.to_csv("truth.csv", index = False)
         dfData.to_csv("data.csv", index = False)
         print("done")

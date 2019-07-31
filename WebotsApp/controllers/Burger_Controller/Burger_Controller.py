@@ -47,8 +47,7 @@ leftOdo.enable(timestep)
 rightOdo.enable(timestep)
 
 
-position = np.zeros((3, 1))
-controlIn = np.zeros((2,1))
+controlIn = np.zeros((2, ))
 
 freq = 0
 
@@ -82,11 +81,11 @@ mode = 0
 # 3 right
 
 def steering(key):
-    u = np.zeros((2,1))
+    u = np.zeros((2,))
     if (key == 87):   #w
         rightWheel.setVelocity(1);
         leftWheel.setVelocity(1);
-        u[0] = .1 * TIRE_RAD
+        u[0] = 1 * TIRE_RAD
         u[1] = 0
         return 1, u
     elif (key == 83):   #s
@@ -100,12 +99,14 @@ def steering(key):
         leftWheel.setVelocity(-1);
         u[0] = 0
         u[1] = -(2 * TIRE_RAD)/AXLE_LEN
+        # u[1] = math.asin(2 * TIRE_RAD/AXLE_LEN) #2 weil sich das andere rad gegen dreht
         return 2, u
     elif (key == 68):   #d
         rightWheel.setVelocity(-1);
         leftWheel.setVelocity(1);
         u[0] = 0
-        u[1] = (.2 * TIRE_RAD)/AXLE_LEN
+        u[1] = (2 * TIRE_RAD)/AXLE_LEN
+        # u[1] = -math.asin(2 * TIRE_RAD/AXLE_LEN) #2 weil sich das andere rad gegen dreht
         return 3, u
     else:
         return mode, controlIn
@@ -115,37 +116,40 @@ rightWheel.setPosition(float('inf'))
     
 rightWheel.setVelocity(0);
 leftWheel.setVelocity(0);
+
     
 while robot.step(timestep) != -1:
     
-    # print(sensorFLL.getValue(), 
-        # sensorFL.getValue(), 
-        # sensorFR.getValue(), 
-        # sensorFRR.getValue())
+    print(
+        #sensorFLL.getValue(), 
+        sensorFL.getValue(), 
+        sensorFR.getValue(), 
+        #sensorFRR.getValue()
+        )
         
     key = keyboard.getKey()
     if(key != -1):
         mode, controlIn = steering(key)    
     
     if freq == 5:
-        leftDist = (leftOdo.getValue() - leftLastPos) * TIRE_RAD
-        rightDist = (rightOdo.getValue() - rightLastPos) * TIRE_RAD
-        leftLastPos = leftOdo.getValue()
-        rightLastPos = rightOdo.getValue()
+        newLeft = leftOdo.getValue()
+        newRight = rightOdo.getValue()
         
-        diff = leftDist - rightDist
-        dist = min(leftDist, rightDist)
-        
-        angle = round(diff /(AXLE_LEN), 8)
-                
-        if(abs(angle)> 0.000001):
-            position[2] = normalize_angle(position[2] + angle)
-        else:
-            position[0] -= math.sin(position[2]) * dist
-            position[1] += math.cos(position[2]) * dist;
     
-        data = np.concatenate([position, controlIn])
-        data = ', '.join(str(x[0]) for x in data)
+        leftDist = newLeft - leftLastPos
+        rightDist = newRight - rightLastPos
+        
+        leftLastPos = newLeft
+        rightLastPos = newRight
+               
+               
+        data  = np.array([leftDist, rightDist, 
+        sensorFL.getValue(), 
+        #sensorFR.getValue()
+        ])
+        
+        data = np.concatenate([data, controlIn])
+        data = ', '.join(str(x) for x in data)
         sendData(data)        
         
         freq = 0

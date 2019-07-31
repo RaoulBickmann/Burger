@@ -3,15 +3,15 @@ WorldInfo {
   basicTimeStep 20
 }
 Viewpoint {
-  orientation 0.2573797185273028 0.9323070058445696 0.25408527573226247 4.6660249612814155
-  position -1.161450704838807 0.7053864761764514 -0.012619720350638998
+  orientation -0.12922202263712823 -0.9262288593019513 -0.3541211220215137 2.481991945869989
+  position -1.1565089491882194 1.7720361811095462 -1.0832873496471325
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 Floor {
-  size 1 1
+  size 3 3
 }
 WoodenBox {
   translation 0.2035858537806572 0.05 -0.22203210044616045
@@ -25,13 +25,13 @@ WoodenBox {
   size 0.1 0.1 0.1
 }
 WoodenBox {
-  translation -0.298736 0.05 0.25
+  translation -0.020509 0.049999999999999996 0.7011259999999999
   name "wooden box(1)"
   size 0.1 0.1 0.1
   mass 0.19999999999999998
 }
 DEF WALL_SOLID Solid {
-  translation -0.5000000000000001 0.05 0
+  translation -1 0.049999999999999996 0
   children [
     DEF WALL Shape {
       appearance PBRAppearance {
@@ -40,7 +40,7 @@ DEF WALL_SOLID Solid {
         metalness 0
       }
       geometry Box {
-        size 0.01 0.1 1
+        size 0.01 0.1 2
       }
     }
   ]
@@ -48,7 +48,7 @@ DEF WALL_SOLID Solid {
   boundingObject USE WALL
 }
 Solid {
-  translation -7.192345078790347e-09 0.049999999999999975 0.5000000000000001
+  translation 0 0.049999999999999996 1.01
   rotation 0 0.9999999999999999 0 4.712388966
   children [
     USE WALL
@@ -57,7 +57,7 @@ Solid {
   boundingObject USE WALL
 }
 Solid {
-  translation 7.192345113484815e-09 0.049999999999999975 -0.5000000000000002
+  translation 0 0.049999999999999996 -1
   rotation 0 0.9999999999999999 0 4.712388966
   children [
     USE WALL
@@ -66,7 +66,7 @@ Solid {
   boundingObject USE WALL
 }
 Solid {
-  translation 0.5000000000000001 0.05 0
+  translation 1 0.049999999999999996 0
   children [
     USE WALL
   ]
@@ -333,7 +333,7 @@ DEF Burger Robot {
       }
     }
     DEF Sensors Transform {
-      translation 0 0.009999999999999998 0
+      translation 0 0.01 0
       children [
         DistanceSensor {
           translation -0.052 0 0.055
@@ -353,6 +353,10 @@ DEF Burger Robot {
           boundingObject USE BURGER_SENSOR_S
           physics DEF DSPhysics Physics {
           }
+          lookupTable [
+            0 100 0
+            1 0 0
+          ]
           type "infra-red"
         }
         DistanceSensor {
@@ -364,6 +368,10 @@ DEF Burger Robot {
           name "FR"
           boundingObject USE BURGER_SENSOR_S
           physics USE DSPhysics
+          lookupTable [
+            0 100 0
+            1 0 0
+          ]
           type "infra-red"
         }
         DistanceSensor {
@@ -375,7 +383,13 @@ DEF Burger Robot {
           name "FL"
           boundingObject USE BURGER_SENSOR_S
           physics USE DSPhysics
-          type "infra-red"
+          rotationStep 0.261799
+          lookupTable [
+            0 1 0
+            1 0 0
+          ]
+          type "laser"
+          aperture 0.001
         }
         DistanceSensor {
           translation 0.052 0 0.055
@@ -386,6 +400,10 @@ DEF Burger Robot {
           name "FLL"
           boundingObject USE BURGER_SENSOR_S
           physics USE DSPhysics
+          lookupTable [
+            0 100 0
+            1 0 0
+          ]
           type "infra-red"
         }
       ]
