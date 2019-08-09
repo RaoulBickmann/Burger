@@ -43,7 +43,7 @@ while robot.step(timestep) != -1:
         zOri = np.array([orientation[6], orientation[8]])
         angle = np.arctan2(zOri[0], zOri[1])
        
-        b =  np.array([translation[0], translation[2], angle])
+        b =  np.array([translation[2], translation[0], angle])
         groundtruth = np.vstack((groundtruth, b))
         freq = 0
     freq += 1

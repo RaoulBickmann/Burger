@@ -83,29 +83,31 @@ mode = 0
 def steering(key):
     u = np.zeros((2,))
     if (key == 87):   #w
-        rightWheel.setVelocity(1);
-        leftWheel.setVelocity(1);
-        u[0] = 1 * TIRE_RAD
-        u[1] = 0
+        u[0] = 1
+        u[1] = 1
+        rightWheel.setVelocity(u[0]);
+        leftWheel.setVelocity(u[1]);
         return 1, u
     elif (key == 83):   #s
-        rightWheel.setVelocity(0);
-        leftWheel.setVelocity(0);
         u[0] = 0
         u[1] = 0
+        rightWheel.setVelocity(u[0]);
+        leftWheel.setVelocity(u[1]);
         return 0, u
     elif (key == 65):   #a
-        rightWheel.setVelocity(1);
-        leftWheel.setVelocity(-1);
-        u[0] = 0
-        u[1] = -(2 * TIRE_RAD)/AXLE_LEN
+        u[0] = 1
+        u[1] = -1
+        rightWheel.setVelocity(u[0]);
+        leftWheel.setVelocity(u[1]);
+        #u[1] = -(2 * TIRE_RAD)/AXLE_LEN
         # u[1] = math.asin(2 * TIRE_RAD/AXLE_LEN) #2 weil sich das andere rad gegen dreht
         return 2, u
     elif (key == 68):   #d
-        rightWheel.setVelocity(-1);
-        leftWheel.setVelocity(1);
-        u[0] = 0
-        u[1] = (2 * TIRE_RAD)/AXLE_LEN
+        u[0] = -1
+        u[1] = 1
+        rightWheel.setVelocity(u[0]);
+        leftWheel.setVelocity(u[1]);
+        #u[1] = (2 * TIRE_RAD)/AXLE_LEN
         # u[1] = -math.asin(2 * TIRE_RAD/AXLE_LEN) #2 weil sich das andere rad gegen dreht
         return 3, u
     else:
