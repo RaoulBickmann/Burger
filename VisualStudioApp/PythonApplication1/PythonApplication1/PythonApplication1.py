@@ -109,7 +109,6 @@ def z_mean(sigmas, Wm):
     dcounter = 0.
     for i in range(np.size(sigmas, 0)):
         if(sigmas[i, 2] != 1):
-            print(sigmas[i, 2], Wm[i])
             dmean += sigmas[i, 2] * Wm[i]
             dcounter += 1
 
@@ -152,7 +151,7 @@ def run_sim(measurements, controlIn, truth):
             #plt.plot(ukf.x[0], ukf.x[1], 'ro', alpha=0.3)
             plt.plot(ukf.x[3], ukf.x[4], 'bo', alpha=0.3)
             plt.plot(ukf.x[0], ukf.x[1], 'go', alpha=0.3)
-            plt.plot(truth[x][0], truth[x][1], 'ko', alpha=0.3)
+            #plt.plot(truth[x][0], truth[x][1], 'ko', alpha=0.3)
             #plot_covariance((ukf.x[0], ukf.x[1]), ukf.P[0:2, 0:2], std=.1, facecolor='g', alpha=0.3)
             print(ukf.x[3], ukf.x[4])
 
