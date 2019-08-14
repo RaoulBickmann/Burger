@@ -125,7 +125,7 @@ while robot.step(timestep) != -1:
     print(
         #sensorFLL.getValue(), 
         sensorFL.getValue(), 
-        sensorFR.getValue(), 
+        # sensorFR.getValue(), 
         #sensorFRR.getValue()
         )
         

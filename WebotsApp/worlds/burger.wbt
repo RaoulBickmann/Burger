@@ -1,4 +1,4 @@
-#VRML_SIM R2019b utf8
+#VRML_SIM R2019a utf8
 WorldInfo {
   basicTimeStep 20
 }
@@ -378,8 +378,8 @@ DEF Burger Robot {
           physics USE DSPhysics
           rotationStep 0.261799
           lookupTable [
-            0 1 0
-            1 0 0
+            0 0 0
+            1 1 0
           ]
           type "laser"
           aperture 0.001
