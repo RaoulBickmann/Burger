@@ -11,6 +11,7 @@ TIRE_RAD = 0.02
 AXLE_LEN = 0.065 * 2
 SENSOR_OFFSET = 0.05
 
+
 def readData(FileName):
 	data = pd.read_csv('%s.csv'%FileName)
 	
@@ -53,30 +54,49 @@ def state_trans(x, dt, u):
 
     return x;
 
-#measurement vector from previous state and control
+#state vector from previous state and control, returns measurement
 def measurement_trans(x, u, dt):
     
     x = +x
 
-    y = np.zeros(3)
+    y = np.zeros(130)
     
     y[0] = u[0] * dt
     y[1] = u[1] * dt
-    y[2] = 1.0
+    y[2:130] = 0.5
 
     #entfernungsvector des hindernisses
     direction = np.array([x[3] - x[0], x[4] - x[1]])
+    distance = sqrt(direction[0]**2 + direction[1]**2)
+    if(distance < 0.5):
 
-    #diff zwischen blickrichtung des roboters und richtung in der sich das hindernis befindet
-    angle = normalize_angle(atan2(direction[1], direction[0]) - x[2]) 
-    
-    #wenn diff klein genug, misst sensor die entfernung 
-    if(abs(angle) < radians(1)):
-        y[2] = sqrt(direction[0]**2 + direction[1]**2)
-        y[2] -= SENSOR_OFFSET
-    #beschränkt entfernung auf 1
-    if(y[2] >= 1):
-        y[2] = 1.0
+        #diff zwischen blickrichtung des roboters und richtung in der sich das hindernis befindet
+        angle = normalize_angle(atan2(direction[1], direction[0]) - x[2])
+ 
+        angleDiff = 2 * np.pi / 128
+        posAngle = True
+        for i in range(128):
+            if(abs(angle) > angleDiff):
+                if(angle >= 0):
+                    angle -= angleDiff
+                    posAngle = True
+                elif(angle < 0):
+                    angle += angleDiff
+                    posAngle = False
+            else:
+                if(posAngle):
+                    y[2+i] = distance
+                else:
+                    y[130-(2+i)] = distance
+                break
+
+    ##wenn diff klein genug, misst sensor die entfernung 
+    #if(abs(angle) < radians(1)):
+    #    y[2] = sqrt(direction[0]**2 + direction[1]**2)
+    #    y[2] -= SENSOR_OFFSET
+    ##beschränkt entfernung auf 1
+    #if(y[2] >= 1):
+    #    y[2] = 1.0
 
     return y
 
@@ -122,12 +142,13 @@ def run_sim(measurements, controlIn, truth):
     points = MerweScaledSigmaPoints(n=5, alpha=.00001, beta=2, kappa=0, subtract=residual_x)
  
     dt = 0.1
-    ukf = UKF(dim_x=5, dim_z=3, fx=state_trans, hx=measurement_trans,
-              dt=dt, points=points, x_mean_fn=state_mean, z_mean_fn=z_mean, residual_x=residual_x)
+    ukf = UKF(dim_x=5, dim_z=130, fx=state_trans, hx=measurement_trans,
+              dt=dt, points=points, x_mean_fn=state_mean, residual_x=residual_x)
 
     ukf.x = np.array([0, 0, 0, 0, 0])
     ukf.P = np.diag([.01, .01, .01, 10000000, 10000000])
-    ukf.R = np.diag([0.1**2, 0.1**2, 0**2])
+    #ukf.R = np.diag([0.1**2, 0.1**2, 0**2])
+    ukf.R = np.eye(130) * 0.1
     ukf.Q = np.diag([0.1**2, 0.1**2, 0.01**2, 0.01**2, 0.01**2])
 
 
@@ -138,11 +159,11 @@ def run_sim(measurements, controlIn, truth):
         ukf.predict(u=u)
         
         #R hoch stzen bei sensor output 1
-        if(z[2] >= 1):
-            badR = np.diag([0.1**2, 0.1**2, 10000000**2])
-            ukf.update(z, badR, u = u, dt = dt)
-        else:
-            ukf.update(z, u = u, dt = dt)
+        #if(z[2] >= 1):
+        #    badR = np.diag([0.1**2, 0.1**2, 10000000**2])
+        #    ukf.update(z, badR, u = u, dt = dt)
+        #else:
+        ukf.update(z, u = u, dt = dt)
 
         plt.plot(0.45, 0, 'go', alpha=0.3)
 
@@ -168,9 +189,12 @@ def test_measurement_trans(state, expected_outcome):
 
 truth = readData("truth")
 data = readData("data")
+lidar = readData("lidar")
 
 measurements = data.filter(regex='^z')
 controlIn = data.filter(regex='^u')
+
+measurements = measurements.join(lidar)
 
 run_sim(measurements.to_numpy(), controlIn.to_numpy(), truth.to_numpy())
 

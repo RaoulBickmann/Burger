@@ -20,8 +20,9 @@ burger = robot.getFromDef('Burger')
 translationField = robot.getFromDef('ROBOT_POSITION')
 rotationField = burger.getField('rotation')
 
-groundtruth = np.zeros((3, 1)).transpose()
-burgerData = np.zeros((5, 1)).transpose()
+groundtruth = np.zeros((1, 3))
+burgerData = np.zeros((1, 4))
+lidarData = np.zeros((1, 128))
 
 freq = 0
 
@@ -52,15 +53,21 @@ while robot.step(timestep) != -1:
     if (key== 67):   #c
         dfTruth = pd.DataFrame(groundtruth, columns=['x', 'y', 'a'])
         dfData = pd.DataFrame(burgerData, 
-            columns=['zl', 'zr', 'zFL', 'uv', 'ua'])
+            columns=['zl', 'zr', 'uv', 'ua'])
+        dfLidar = pd.DataFrame(lidarData)
+        
         dfTruth.to_csv("truth.csv", index = False)
         dfData.to_csv("data.csv", index = False)
+        dfLidar.to_csv("lidar.csv", index = False)
         print("done")
    
     if receiver.getQueueLength() > 0:
         message = receiver.getData().decode('utf-8')
         receiver.nextPacket()
         data = np.fromstring(message, sep=",")
-        burgerData = np.vstack((burgerData, data))
+        movData = data[0:4]
+        lData = data[4:]
+        lidarData = np.vstack((lidarData, lData))
+        burgerData = np.vstack((burgerData, movData))
 pass
 

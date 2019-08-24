@@ -29,6 +29,8 @@ sensorFL = robot.getDistanceSensor("FL")
 sensorFR = robot.getDistanceSensor("FR")
 sensorFRR = robot.getDistanceSensor("FRR")
 
+lidar = robot.getLidar("lidar")
+
 sensorFLL.enable(timestep)
 sensorFL.enable(timestep)
 sensorFR.enable(timestep)
@@ -47,12 +49,18 @@ leftOdo.enable(timestep)
 rightOdo.enable(timestep)
 
 
+lidar.enable(timestep)
+lidar.enablePointCloud()
+
+
+
 controlIn = np.zeros((2, ))
 
 freq = 0
 
 TIRE_RAD = 0.02
 AXLE_LEN = 0.065 * 2
+MAX_RANGE = lidar.getMaxRange()
 
 total = 0
 
@@ -122,12 +130,13 @@ leftWheel.setVelocity(0);
     
 while robot.step(timestep) != -1:
     
-    print(
+    # print(
+        # lidar.getRangeImage()
         #sensorFLL.getValue(), 
-        sensorFL.getValue(), 
+        # sensorFL.getValue(), 
         # sensorFR.getValue(), 
         #sensorFRR.getValue()
-        )
+        # )
         
     key = keyboard.getKey()
     if(key != -1):
@@ -144,27 +153,45 @@ while robot.step(timestep) != -1:
         leftLastPos = newLeft
         rightLastPos = newRight
                
+        rangeImage = lidar.getRangeImage()
+        counter = 0
+        features = []
+        cumulative = 0
+
+        
+        for i in range(len(rangeImage)):
+            distance = rangeImage[i]
+            if(distance < 0.5):
+                if(counter == 0):
+                    start = i
+                cumulative += distance
+                counter += 1
+            else:
+                if(counter > 0):
+                    index = round(start+counter/2)
+                    angle = normalize_angle(2*np.pi/128 * index)
+                    
+                    features.append([rangeImage[index], angle])
+                    counter = 0
+                    cumulative = 0
+        
+        print(features)               
                
         data  = np.array([leftDist, rightDist, 
-        sensorFL.getValue(), 
+        # sensorFL.getValue(), 
         #sensorFR.getValue()
         ])
         
         data = np.concatenate([data, controlIn])
+        data = np.concatenate([data, rangeImage])
         data = ', '.join(str(x) for x in data)
         sendData(data)        
+
         
         freq = 0
     freq += 1
-
-    # Process sensor data here.
-    # d.driveStraight(robot)
-
-    # Enter here functions to send actuator commands, like:
-    #  led.set(1)
     pass
 
-# Enter here exit cleanup code.
 
 
 

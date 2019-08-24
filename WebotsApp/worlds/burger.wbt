@@ -1,10 +1,10 @@
 #VRML_SIM R2019a utf8
 WorldInfo {
-  basicTimeStep 20
+  basicTimeStep 10
 }
 Viewpoint {
-  orientation -0.5194801472705617 -0.7046802282593713 -0.4832868221792064 1.8394146286753892
-  position -0.5750134876852495 1.6407428643821549 0.1728961979756813
+  orientation -0.2767317332734639 -0.918621826293217 -0.2820522789434235 1.6647985064257012
+  position -0.8398471624242252 0.5847263873430179 -0.04666991414658746
 }
 TexturedBackground {
 }
@@ -14,12 +14,12 @@ Floor {
   size 3 3
 }
 WoodenBox {
-  translation 0.2035858537806572 0.05 -0.22203210044616045
+  translation 0.7847359297020193 0.05 -0.7797452587545313
   rotation 0 1 0 4.1953351758958295
   size 0.1 0.1 0.1
 }
 WoodenBox {
-  translation 0 0.05 0.5
+  translation 0.05529471270421524 0.05 -0.295496168923242
   name "wooden box(2)"
   size 0.1 0.1 0.1
 }
@@ -67,7 +67,7 @@ Solid {
   boundingObject USE WALL
 }
 Robot {
-  translation -0.01691397421836187 0.08 -0.3521694422554972
+  translation 0.45246256770023624 0.07999999999999889 -0.7812616633822935
   children [
     DistanceSensor {
       translation 0.03 0 0.1
@@ -223,6 +223,19 @@ Robot {
 DEF Burger Robot {
   translation 0 0.05 0
   children [
+    Lidar {
+      translation 0 0.03 0
+      rotation 2.5459971705975484e-18 -0.9991351502732795 -0.04158066243329049 3.1415926535897936
+      rotationStep 0.1
+      horizontalResolution 128
+      fieldOfView 1.57
+      numberOfLayers 1
+      near 0.05
+      minRange 0.05
+      maxRange 0.5
+      type "rotating"
+      defaultFrequency 2
+    }
     DEF ROBOT_POSITION Transform {
       rotation 0 1 0 -9.307179586137693e-06
       children [
@@ -422,5 +435,4 @@ Robot {
   name "robot(1)"
   controller "Supervisor"
   supervisor TRUE
-  showWindow TRUE
 }
