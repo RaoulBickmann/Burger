@@ -5,10 +5,9 @@
 from controller import Robot, DistanceSensor, Motor, PositionSensor
 import numpy as np
 from lib import drive as d
-from lib import EKF as ekf
 from controller import Keyboard
-import struct, math
-
+# import struct, math
+from math import atan2
 
 # create the Robot instance.
 robot = Robot()
@@ -142,7 +141,7 @@ while robot.step(timestep) != -1:
     if(key != -1):
         mode, controlIn = steering(key)    
     
-    if freq == 5:
+    if freq == 10:
         newLeft = leftOdo.getValue()
         newRight = rightOdo.getValue()
         
@@ -155,35 +154,40 @@ while robot.step(timestep) != -1:
                
         rangeImage = lidar.getRangeImage()
         counter = 0
-        features = []
+        features = [[0.5,0]]
         cumulative = 0
 
-        
+        # print("step")
+        # print(rangeImage)
+        points = []
         for i in range(len(rangeImage)):
             distance = rangeImage[i]
             if(distance < 0.5):
-                if(counter == 0):
-                    start = i
-                cumulative += distance
-                counter += 1
-            else:
-                if(counter > 0):
-                    index = round(start+counter/2)
-                    angle = normalize_angle(2*np.pi/128 * index)
-                    
-                    features.append([rangeImage[index], angle])
-                    counter = 0
-                    cumulative = 0
+                angle = normalize_angle(2*np.pi/128 * i)
+                points.append([distance, angle])
+                  
         
-        print(features)               
-               
+        points = np.array(points)
+        meanDist = np.sum(points[:, 0])/len(points)
+
+        #Mean Winkel
+        sum_sin = np.sum(np.sin(points[:, 1]))
+        sum_cos = np.sum(np.cos(points[:, 1]))
+        
+        meanAngle = atan2(sum_sin, sum_cos)
+                                  
+        #einzelne werte
+        # print(features)               
+                              
         data  = np.array([leftDist, rightDist, 
+        meanDist,
+        meanAngle
         # sensorFL.getValue(), 
         #sensorFR.getValue()
         ])
         
         data = np.concatenate([data, controlIn])
-        data = np.concatenate([data, rangeImage])
+        # data = np.concatenate([data, rangeImage])
         data = ', '.join(str(x) for x in data)
         sendData(data)        
 

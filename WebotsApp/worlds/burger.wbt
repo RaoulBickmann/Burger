@@ -1,10 +1,10 @@
-#VRML_SIM R2019a utf8
+#VRML_SIM R2019b utf8
 WorldInfo {
   basicTimeStep 10
 }
 Viewpoint {
-  orientation -0.2767317332734639 -0.918621826293217 -0.2820522789434235 1.6647985064257012
-  position -0.8398471624242252 0.5847263873430179 -0.04666991414658746
+  orientation -0.3671831208272459 -0.8519793240827858 -0.37323958406766494 1.7390914814904752
+  position -1.215061025179141 1.5080871434984278 0.17765353939912035
 }
 TexturedBackground {
 }
@@ -19,7 +19,7 @@ WoodenBox {
   size 0.1 0.1 0.1
 }
 WoodenBox {
-  translation 0.05529471270421524 0.05 -0.295496168923242
+  translation 0.3 0.05 0
   name "wooden box(2)"
   size 0.1 0.1 0.1
 }
@@ -224,17 +224,16 @@ DEF Burger Robot {
   translation 0 0.05 0
   children [
     Lidar {
-      translation 0 0.03 0
+      translation 0 0.02 0.004986
       rotation 2.5459971705975484e-18 -0.9991351502732795 -0.04158066243329049 3.1415926535897936
-      rotationStep 0.1
+      rotationStep 0
       horizontalResolution 128
-      fieldOfView 1.57
+      fieldOfView 3.14
       numberOfLayers 1
       near 0.05
       minRange 0.05
       maxRange 0.5
       type "rotating"
-      defaultFrequency 2
     }
     DEF ROBOT_POSITION Transform {
       rotation 0 1 0 -9.307179586137693e-06
