@@ -68,7 +68,7 @@ def measurement_trans(x, u, dt):
     distance = sqrt(direction[0]**2 + direction[1]**2)
 
     y[2] = distance
-    y[3] = normalize_angle(atan2(direction[1], direction[0]) + x[2])
+    y[3] = normalize_angle(atan2(direction[1], direction[0]) - x[2])
 
     return y
 
@@ -135,10 +135,24 @@ def run_sim(measurements, controlIn, truth):
         except np.linalg.LinAlgError:
             ukf.P = ps.nearestPD(ukf.P)
 
-        if x % 10 == 0:
+        angle = - np.pi/2
+        rotation = np.array([[cos(angle), -sin(angle)], [sin(angle), cos(angle)]])
+
+        if x % 1 == 0:
+
+            roboX = ukf.x[0] * rotation[0][0] + ukf.x[1] * rotation[0][1]
+            roboY = ukf.x[0] * rotation[1][0] + ukf.x[1] * rotation[1][1]
+
+            obsX = ukf.x[3] * rotation[0][0] + ukf.x[4] * rotation[0][1]
+            obsY = ukf.x[3] * rotation[1][0] + ukf.x[4] * rotation[1][1]
+
+            #plt.plot(roboX, roboY, 'go', alpha=0.3)
+            #plt.plot(obsX,  obsY, 'bo', alpha=0.3)
+
+
             plt.plot(ukf.x[0], ukf.x[1], 'go', alpha=0.3)
             plt.plot(ukf.x[3], ukf.x[4], 'bo', alpha=0.3)
-            print(ukf.x[2])
+            #print(ukf.x[2])
 
             #echte position roboter
             plt.plot(truth[x][0], truth[x][1], 'ko', alpha=0.3)
@@ -147,7 +161,7 @@ def run_sim(measurements, controlIn, truth):
             #plot_covariance((ukf.x[0], ukf.x[1]), ukf.P[0:2, 0:2], std=.1, facecolor='g', alpha=0.3)
 
     #echte position hindernis
-    plt.plot(0 , 0.3, 'ro', alpha=0.3)
+    plt.plot(0 , 0.25, 'ro', alpha=0.3)
     plt.show()
 
 

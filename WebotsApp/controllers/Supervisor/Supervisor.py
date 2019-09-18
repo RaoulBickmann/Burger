@@ -42,7 +42,7 @@ while robot.step(timestep) != -1:
         orientation = translationField.getOrientation()
         
         zOri = np.array([orientation[6], orientation[8]])
-        angle = np.arctan2(zOri[0], zOri[1])
+        angle = - np.arctan2(zOri[0], zOri[1])
         
         print(translation)
         b =  np.array([translation[2], translation[0], angle])

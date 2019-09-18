@@ -174,7 +174,7 @@ while robot.step(timestep) != -1:
         sum_sin = np.sum(np.sin(points[:, 1]))
         sum_cos = np.sum(np.cos(points[:, 1]))
         
-        meanAngle = atan2(sum_sin, sum_cos)
+        meanAngle = - atan2(sum_sin, sum_cos)
                                   
         #einzelne werte
         # print(features)               
