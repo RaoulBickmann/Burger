@@ -61,11 +61,9 @@ def measurement_trans(x, u, dt):
     x = +x
 
     y = np.zeros(2)
-    
-    #y[0] = u[0] * dt
-    #y[1] = u[1] * dt
 
-    direction = np.array([0 - x[0], 0 - x[1]])
+    #vector zu beacon im nullpunkt
+    direction = [0 - x[0], 0 - x[1]]
     distance = sqrt(direction[0]**2 + direction[1]**2)
 
     y[0] = distance
@@ -73,7 +71,7 @@ def measurement_trans(x, u, dt):
 
     return y
 
-#Berechnung des mean der Zustände z=[xRobo, yRobo, Orientierung, xHindernis, yHindernis]
+#Berechnung des mean der Zustände z=[xRobo, yRobo, Orientierung]
 def state_mean(sigmas, Wm):
     x = np.zeros(3)
 
@@ -89,7 +87,7 @@ def state_mean(sigmas, Wm):
     #x[4] = np.sum(np.dot(sigmas[:, 4], Wm))                      
     return x
 
-#Berechnung des mean der Messwerte z = [linkeOdometrie, rechteOdometrie, distanzInCm, angleInRadians]
+#Berechnung des mean der Messwerte z = [distanzInCm, angleInRadians]
 def z_mean(sigmas, Wm):
     z = np.zeros(2)
 
@@ -111,16 +109,20 @@ def run_sim(measurements, controlIn, truth):
     ukf = UKF(dim_x=3, dim_z=2, fx=state_trans, hx=measurement_trans,
               dt=dt, points=points, x_mean_fn=state_mean, z_mean_fn=z_mean, residual_x=residual_x, residual_z=residual_h)
 
-    ukf.x = np.array([0, 0, 0])
+    ukf.x = np.array([0., -0.3, 0.])
     ukf.P = np.diag([.01, .01, .01])
     #ukf.R = np.diag([0.1**2, 0.1**2, 0**2])
-    ukf.R = np.diag([0.01**2, 0.01**2])           #measurement noise = [linkeOdometrie, rechteOdometrie, distanzInCm, angleInRadians]
-    ukf.Q = np.diag([0.001**2, 0.001**2, 0.2**2])  #process noise = [xRobo, yRobo, Orientierung, xHindernis, yHindernis]
+    ukf.R = np.diag([0.001**2, 0.001**2])           #measurement noise = [linkeOdometrie, rechteOdometrie, distanzInCm, angleInRadians]
+    ukf.Q = np.diag([0.00001**2, 0.00001**2, 0.001**2])  #process noise = [xRobo, yRobo, Orientierung, xHindernis, yHindernis]
+
+    plt.plot(ukf.x[0], ukf.x[1], 'go', alpha=0.3)
+
 
     for x in range(np.size(measurements, 0)):
         
         u = controlIn[x]
         z = measurements[x][2:3]
+        #z = measurements[x]
 
         ukf.predict(u=u)
         
@@ -139,7 +141,7 @@ def run_sim(measurements, controlIn, truth):
         angle = - np.pi/2
         rotation = np.array([[cos(angle), -sin(angle)], [sin(angle), cos(angle)]])
 
-        if x % 1 == 0:
+        if x < 10000:
 
             #roboX = ukf.x[0] * rotation[0][0] + ukf.x[1] * rotation[0][1]
             #roboY = ukf.x[0] * rotation[1][0] + ukf.x[1] * rotation[1][1]
@@ -161,6 +163,9 @@ def run_sim(measurements, controlIn, truth):
 
             #plot_covariance((ukf.x[0], ukf.x[1]), ukf.P[0:2, 0:2], std=.1, facecolor='g', alpha=0.3)
 
+
+    print(ukf.x)
+
     #echte position hindernis
     plt.plot(0 , 0.25, 'ro', alpha=0.3)
     plt.show()
@@ -179,6 +184,7 @@ data = readData("data")
 
 measurements = data.filter(regex='^z')
 controlIn = data.filter(regex='^u')
+
 
 run_sim(measurements.to_numpy(), controlIn.to_numpy(), truth.to_numpy())
 

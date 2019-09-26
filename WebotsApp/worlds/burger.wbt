@@ -3,8 +3,8 @@ WorldInfo {
   basicTimeStep 10
 }
 Viewpoint {
-  orientation -0.3671831208272459 -0.8519793240827858 -0.37323958406766494 1.7390914814904752
-  position -1.215061025179141 1.5080871434984278 0.17765353939912035
+  orientation -0.30730190370493854 -0.8879740395234401 -0.34215149438771203 1.787110351922731
+  position -1.3833562667494252 1.358452835954351 0.15686075185190204
 }
 TexturedBackground {
 }
@@ -19,7 +19,7 @@ WoodenBox {
   size 0.1 0.1 0.1
 }
 WoodenBox {
-  translation 0.3 0.05 0
+  translation 0 0.049999999999999996 0
   name "wooden box(2)"
   size 0.1 0.1 0.1
 }
@@ -221,7 +221,7 @@ Robot {
   controller ""
 }
 DEF Burger Robot {
-  translation 0 0.05 0
+  translation -0.3 0.049999999999999996 0
   children [
     Lidar {
       translation 0 0.02 0.004986

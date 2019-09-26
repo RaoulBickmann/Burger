@@ -54,7 +54,7 @@ while robot.step(timestep) != -1:
     if (key== 67):   #c
         dfTruth = pd.DataFrame(groundtruth, columns=['x', 'y', 'a'])
         dfData = pd.DataFrame(burgerData, 
-            columns=['zl', 'zr', 'zd', 'za', 'uv', 'ua'])
+            columns=['zl', 'zr', 'zd', 'za', 'ul', 'ur'])
         dfLidar = pd.DataFrame(lidarData)
         
         dfTruth.to_csv("truth.csv", index = False)
