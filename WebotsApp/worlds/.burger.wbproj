@@ -7,5 +7,5 @@ centralWidgetVisible: 1
 selectionDisabled: 0
 viewpointLocked: 0
 orthographicViewHeight: 1
-textFiles: 1 "controllers/Burger_Controller/Burger_Controller.py" "controllers/Supervisor/Supervisor.py"
+textFiles: 0 "controllers/Burger_Controller/Burger_Controller.py" "controllers/Supervisor/Supervisor.py"
 globalOptionalRendering: LidarPointClouds
